@@ -1,3 +1,54 @@
+(function( window ) {
+    var Tap = {};
+
+    var utils = {};
+
+    utils.attachEvent = function( element, eventName, callback ) {
+        return element.addEventListener( eventName, callback, false );
+    };
+
+    utils.fireFakeEvent = function( e, eventName ) {
+        return e.target.dispatchEvent( utils.createEvent( eventName ) );
+    };
+
+    utils.createEvent = function( name ) {
+        var evnt = window.document.createEvent( 'HTMLEvents' );
+        evnt.initEvent( name, true, true );
+        evnt.eventName = name;
+
+        return evnt;
+    };
+
+    utils.getRealEvent = function( e ) {
+        return e.originalEvent && e.originalEvent.touches && e.originalEvent.touches.length ? e.originalEvent.touches[ 0 ] : e;
+    };
+
+    var eventMatrix = [{
+        // Touchable devices
+        test: ( 'propertyIsEnumerable' in window || 'hasOwnProperty' in document ) && ( window.propertyIsEnumerable( 'ontouchstart' ) || document.hasOwnProperty( 'ontouchstart') ),
+        events: {
+            start: 'touchstart',
+            move: 'touchmove',
+            end: 'touchend'
+        }
+    }, {
+        // IE10
+        test: window.navigator.msPointerEnabled,
+        events: {
+            start: 'MSPointerDown',
+            move: 'MSPointerMove',
+            end: 'MSPointerUp'
+        }
+    }, {
+        // Modern device agnostic web
+        test: window.navigator.pointerEnabled,
+        events: {
+            start: 'pointerdown',
+            move: 'pointermove',
+            end: 'pointerup'
+        }
+    }];
+
     Tap.options = {
         eventName: 'tap',
         fingerMaxOffset: 11
@@ -68,3 +119,5 @@
     utils.attachEvent( window, 'load', init );
 
     window.Tap = Tap;
+
+})( window );

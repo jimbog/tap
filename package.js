@@ -6,5 +6,5 @@ Package.describe({
 });
 
 Package.onUse(function (api) {
-  api.addFiles(['events.js', 'utils.js', 'tap.js'], 'client');
+  api.addFiles(['tap.js'], 'client');
 });
